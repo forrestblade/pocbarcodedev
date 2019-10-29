@@ -1,7 +1,6 @@
 import React, { useState } from 'react'
 import { ScanSettings, Barcode } from "scandit-sdk";
 import BarcodePicker from '../barcodePicker'
-import { fetchEquipment } from '../../services/fetchEquipment';
 
 const Main = (props) => {
 
@@ -17,13 +16,7 @@ const Main = (props) => {
         const lastName = data[4].substr(3)
         document.getElementById("scandit-barcode-result").innerHTML = `Hello ${firstName} ${lastName}`
       } else {
-        document.getElementById("scandit-barcode-result").innerHTML =
-          barcode.reduce(function (string, barcode) {
-
-            return string + Barcode.Symbology.toHumanizedName(barcode.symbology) + ": " + barcode.data + "<br>";
-          },
-            "");
-
+        document.getElementById("scandit-barcode-result").innerHTML = Barcode.Symbology.toHumanizedName(barcode.symbology) + ": " + barcode.data + "<br>";
       }
     })
 
