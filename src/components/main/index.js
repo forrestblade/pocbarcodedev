@@ -7,8 +7,26 @@ const Main = (props) => {
 
   const [scan, showScan] = useState(false)
 
-  function scanBarcode() {
+  function scanBarcode(code = {}) {
     showScan(!scan)
+
+    code.barcodes && code.barcodes.map(barcode => {
+      if (barcode.symbology === 'pdf417') {
+        const data = barcode.data.split('\n')
+        const firstName = data[2].substr(3)
+        const lastName = data[4].substr(3)
+        document.getElementById("scandit-barcode-result").innerHTML = `Hello ${firstName} ${lastName}`
+      } else {
+        document.getElementById("scandit-barcode-result").innerHTML =
+          barcode.reduce(function (string, barcode) {
+
+            return string + Barcode.Symbology.toHumanizedName(barcode.symbology) + ": " + barcode.data + "<br>";
+          },
+            "");
+
+      }
+    })
+
   }
   return (
     <React.Fragment>
@@ -24,15 +42,8 @@ const Main = (props) => {
               })
             }
             onScan={scanResult => {
-              scanBarcode()
-              fetchEquipment()
-              document.getElementById("scandit-barcode-result").innerHTML = 
-              scanResult.barcodes.reduce(function (string,barcode) {
-                console.log(string, 'string')
-                console.log(barcode, 'barcode')
-                return string + Barcode.Symbology.toHumanizedName(barcode.symbology) + ": " + barcode.data + "<br>";
-              },
-                "");
+              scanBarcode(scanResult)
+
             }}
             onError={error => {
               console.error(error.message);
